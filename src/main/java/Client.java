@@ -64,10 +64,11 @@ public class Client {
                         miosocket.close();
                         break;
                     }
-                }
-                
+                }else
+                    System.out.println("Prego, inserire un numero tra 1 e 100.");
+
             } catch (Exception e) {
-                System.out.println("Errore, inserire un numero valido.");
+                System.out.println("Errore, impossibile inserire lettere, solo numeri.");
             }
         }
     }
