@@ -1,2 +1,1 @@
-# compito1
 # AlessandroPiseci
