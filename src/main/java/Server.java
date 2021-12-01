@@ -4,12 +4,13 @@ import java.io.*;
 public class Server{
 
     String stringaRicevuta = null;
-    String stringaModificata = null;
+    int stringaConvertita;
     BufferedReader inDalClient;
     DataOutputStream outVersoClient;
+    int guess = new java.util.Random().nextInt(100) + 1;
 
 
-    public void start() {
+    public void start() throws Exception{
     try {
         ServerSocket serverSocket = new ServerSocket(6789);
         System.out.println("1 Server in attesa ...");
@@ -20,15 +21,21 @@ public class Server{
         inDalClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
         outVersoClient = new DataOutputStream(client.getOutputStream());
 
+        System.out.println("numero da indovinare: " + guess); //per debug
+
         for(;;){
             stringaRicevuta = inDalClient.readLine();
-            if(stringaRicevuta.equals("STOP")) { //controllo sulla stringa STOP
-                outVersoClient.writeBytes(stringaRicevuta + "(=>server in chiusura ...)" + '\n');
+            stringaConvertita = Integer.parseInt(stringaRicevuta); //trasformo la stringa in un int
+
+            if(stringaConvertita == guess) { //controllo sulla stringa STOP
+                outVersoClient.writeBytes("Bravo! hai indovinato! Chiusura socket." + '\n');
                 System.out.println("6 Echo sul server in chiusura :" + stringaRicevuta);
                 break;
-            } else {
-                outVersoClient.writeBytes(stringaRicevuta + " (ricevuta e ritrasmessa)" + '\n');
-                System.out.println("6 Echo sul server :" + stringaRicevuta);
+            }else if(stringaConvertita < guess){
+                outVersoClient.writeBytes("il numero selezionato e' troppo piccolo" + '\n');
+                
+            }else if(stringaConvertita > guess){
+                outVersoClient.writeBytes("il numero selezionato e' troppo grande" + '\n');
             }
         }
         outVersoClient.close();
@@ -41,7 +48,7 @@ public class Server{
     }
 }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         Server tcpServer = new Server();
         tcpServer.start();
     }

@@ -37,17 +37,17 @@ public class Client {
     public void comunica() {
         for (;;) {
             try {
-                System.out.println("4 ... Utente, inserisci la stringa da trasmettere al server:" + '\n');
+                System.out.println("4 Utente, indovina il numero:" + '\n');
                 stringaUtente = tastiera.readLine();
                 // la spedisco al server
-                System.out.println("5 ... invio la stringa al server e attendo ...");
+                System.out.println("5 invio la risposta al server e attendo ...");
                 outVersoServer.writeBytes(stringaUtente + '\n');
 
                 // leggo la risposta del server
                 stringaRicevutaDalServer = inDalServer.readLine();
-                System.out.println("7 ... risposta dal server" + '\n' + stringaRicevutaDalServer);
+                System.out.println("Server: " + stringaRicevutaDalServer);
 
-                if (stringaUtente.equals("STOP")) {
+                if (stringaRicevutaDalServer.equals("Bravo! hai indovinato! Chiusura socket.")) {
                     System.out.println("8 CLIENT: termina elaborazione e chiude connessione");
                     miosocket.close();
                     break;
