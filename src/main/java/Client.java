@@ -11,8 +11,15 @@ public class Client {
     DataOutputStream outVersoServer;
     BufferedReader inDalServer;
 
-    public Socket connetti() {
-        System.out.println("2 Client partito in esecuzione ...");
+    int controllo;
+    
+    
+    /** 
+     * @param ..."
+     * @return Socket
+     */
+    public Socket connetti() { //collegamento al server
+        System.out.println("Client partito in esecuzione ...");
         try {
             //input da tastiera
             tastiera = new BufferedReader(new InputStreamReader(System.in));
@@ -22,6 +29,8 @@ public class Client {
             outVersoServer = new DataOutputStream(miosocket.getOutputStream());
 
             inDalServer = new BufferedReader(new InputStreamReader(miosocket.getInputStream()));
+
+            System.out.println("Benvenuto utente, devi indovinare un numero generato dal server tra 1 e 100");
 
         } catch (UnknownHostException e) {
             System.err.println("Host sconosciuto");
@@ -37,30 +46,36 @@ public class Client {
     public void comunica() {
         for (;;) {
             try {
-                System.out.println("4 Utente, indovina il numero:" + '\n');
+                System.out.println("Utente, indovina il numero: ");
                 stringaUtente = tastiera.readLine();
-                // la spedisco al server
-                System.out.println("5 invio la risposta al server e attendo ...");
-                outVersoServer.writeBytes(stringaUtente + '\n');
+                controllo = Integer.parseInt(stringaUtente);
 
-                // leggo la risposta del server
-                stringaRicevutaDalServer = inDalServer.readLine();
-                System.out.println("Server: " + stringaRicevutaDalServer);
+                if(controllo <= 100 && controllo >=1){
+                    // la spedisco al server
+                    System.out.println("Invio la risposta al server e attendo ...");
+                    outVersoServer.writeBytes(stringaUtente + '\n');
 
-                if (stringaRicevutaDalServer.equals("Bravo! hai indovinato! Chiusura socket.")) {
-                    System.out.println("8 CLIENT: termina elaborazione e chiude connessione");
-                    miosocket.close();
-                    break;
+                    // leggo la risposta del server
+                    stringaRicevutaDalServer = inDalServer.readLine();
+                    System.out.println("Server dice: " + stringaRicevutaDalServer);
+
+                    if (stringaRicevutaDalServer.equals("Bravo! hai indovinato! Chiusura socket.")) { //se il numero è stato indovinato chiudo la connessione con il server
+                        System.out.println("CLIENT: termina elaborazione e chiude connessione");
+                        miosocket.close();
+                        break;
+                    }
                 }
-
+                
             } catch (Exception e) {
-                System.out.println("e.getMessage()");
-                System.out.println("Errore durante la comunicazione con il server!");
-                System.exit(1);
+                System.out.println("Errore, inserire un numero valido.");
             }
         }
     }
 
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         Client client = new Client();
         client.connetti();
